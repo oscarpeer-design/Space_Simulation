@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Space_Simulation", "Space_Simulation.vcxproj", "{00B1ED25-9764-4776-91A5-B2B96C658C32}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Debug|x64.ActiveCfg = Debug|x64
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Debug|x64.Build.0 = Debug|x64
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Debug|x86.ActiveCfg = Debug|Win32
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Debug|x86.Build.0 = Debug|Win32
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Release|x64.ActiveCfg = Release|x64
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Release|x64.Build.0 = Release|x64
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Release|x86.ActiveCfg = Release|Win32
+		{00B1ED25-9764-4776-91A5-B2B96C658C32}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {27625E2F-89A9-4082-A62B-F819D4BC6F59}
+	EndGlobalSection
+EndGlobal
