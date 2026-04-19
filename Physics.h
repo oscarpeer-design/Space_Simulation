@@ -11,13 +11,15 @@ const int errDivisionZero = -1;
 const int errRootNegativeNumber = -2;
 const int errNumTooLarge = -3;
 
-struct Point {
+struct Point { 
+	//Represents position of 3D coordinates
 	double x = 0;
 	double y = 0;
 	double z = 0;
 };
 
-int validateDouble(double value) {
+// Make this inline so the header may be included in multiple translation units.
+inline int validateDouble(double value) {
 	if (value == 0)
 		return errDivisionZero;
 	else if (value < 0)
@@ -79,7 +81,7 @@ static double OrbitalPeriod(double starMass, double acceleration) {
 		return iErr;
 
 	double orbitalPeriod = 2 * Pi * std::sqrt((std::pow(acceleration, 3) / (UniversalGravitationalConstant * starMass)));
-
+	return orbitalPeriod;
 }
 
 static double OrbitalPeriodInYears(double orbitalPeriod) {

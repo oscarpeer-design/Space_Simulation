@@ -1,5 +1,46 @@
+#include "WindowDrawing.h"
+#include "Physics.h"
+
 #include <windows.h>
 #include <iostream>
+#include <cmath>
+
+// Projects a 3D Point into 2D screen coordinates using a simple pinhole camera model.
+// Algorithm based on the provided Python snippet: normalize vector, avoid z<=0, compute focal length from FOV.
+Coordinate Project3DTo2D(const Point &p, int fov, int screenWidth, int screenHeight)
+{
+	// Copy components
+	double vx = p.x;
+	double vy = p.y;
+	double vz = p.z;
+
+	// Normalize vector to avoid scale-dependence
+	double len = std::sqrt(vx * vx + vy * vy + vz * vz);
+	if (len == 0.0) {
+		// avoid division by zero; treat as small forward vector
+		len = 1e-6;
+	}
+	vx /= len;
+	vy /= len;
+	vz /= len;
+
+	// If point is behind or at the camera plane, push it slightly forward to avoid division blow-up.
+	if (vz <= 0.0) {
+		vz = 1e-3;
+	}
+
+	// Focal length from field of view (fov in degrees)
+	double fovRad = (static_cast<double>(fov) / 2.0) * (Pi / 180.0); // Pi from Physics.h
+	double focalLength = (static_cast<double>(screenWidth) / 2.0) / std::tan(fovRad);
+    /*
+    Use 3D-2D projection formula:
+    x = (v.x / v.z) * f + w/2 
+    y = (v.y / v.z) * f + h/2 */
+	double px = (vx / vz) * focalLength + static_cast<double>(screenWidth) / 2.0;
+	double py = (vy / vz) * focalLength + static_cast<double>(screenHeight) / 2.0;
+
+	return Coordinate{ static_cast<int>(std::round(px)), static_cast<int>(std::round(py)) };
+}
 
 // Draw a filled circle centered in the client area
 void DrawCircleInClient(HDC hdc, const RECT & rc)
