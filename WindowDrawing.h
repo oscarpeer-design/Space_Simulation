@@ -22,24 +22,52 @@ struct Coordinate {
 	~Coordinate() {}
 };
 
+// Struct to store RGB Colours
+struct RGBBuffer {
+	UINT8 red = 255;
+	UINT8 green = 255;
+	UINT8 blue = 255;
+
+	RGBBuffer() = default;
+
+	RGBBuffer(UINT8 r, UINT8 g, UINT8 b) {
+		red = r;
+		green = g;
+		blue = b;
+	}
+
+	~RGBBuffer() {}
+};
+
 // Representation of orbital body
 struct OrbitalBodyRepresentation {
-	Coordinate pointOnScreen;
+	Coordinate coordOnScreen;
 	int index = 1;
 	int radius = 1;
-	INT8 red = 255;
-	INT8 green = 255;
-	INT8 blue = 255;
+	bool hasRings = false;
+	UINT8 ringThickness = 0;
+
+	RGBBuffer colourBuffer;
+	RGBBuffer ringColourBuffer;
 	
 	OrbitalBodyRepresentation() = default;
 
-	OrbitalBodyRepresentation(Coordinate coord, int pIndex, int pRadius, INT8 cred, INT8 cgreen, INT8 cblue) {
-		pointOnScreen = coord;
+	OrbitalBodyRepresentation(Coordinate coord, int pIndex, int pRadius, RGBBuffer buffer) {
+		coordOnScreen = coord;
 		index = pIndex;
 		radius = pRadius;
-		red = cred;
-		green = cgreen;
-		blue = cblue;
+		colourBuffer = buffer;
+		hasRings = false;
+	}
+
+	OrbitalBodyRepresentation(Coordinate coord, int pIndex, int pRadius, RGBBuffer buffer, RGBBuffer ringColour, UINT8 thickness) {
+		coordOnScreen = coord;
+		index = pIndex;
+		radius = pRadius;
+		colourBuffer = buffer;
+		hasRings = true;
+		ringColourBuffer = ringColour;
+		ringThickness = thickness;
 	}
 
 	~OrbitalBodyRepresentation() {}
