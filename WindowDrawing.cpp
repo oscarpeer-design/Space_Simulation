@@ -42,19 +42,27 @@ Coordinate Project3DTo2D(const Point &p, int fov, int screenWidth, int screenHei
 	return Coordinate{ static_cast<int>(std::round(px)), static_cast<int>(std::round(py)) };
 }
 
+// Draw a pixel in the client area
+static void DrawPixelInClient(HWND hWnd, Coordinate coord, INT8 red = 255, INT8 green = 0, INT8 blue = 0) {
+    HDC hdc = GetDC(hWnd); // Get DC for the window
+    SetPixel(hdc, coord.x, coord.y, RGB(red, green, blue));
+    ReleaseDC(hWnd, hdc); // Always release the DC
+}
+
 // Draw a filled circle centered in the client area
-void DrawCircleInClient(HDC hdc, const RECT & rc)
+static void DrawCircleInClient(HDC hdc, int cx, int cy, int radius, INT8 red = 255, INT8 green = 255, INT8 blue = 255)
 {
-    int cx = (rc.right + rc.left) / 2;
-    int cy = (rc.bottom + rc.top) / 2;
-    int radius = 50;
-    HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255)); // white
+    HBRUSH brush = CreateSolidBrush(RGB(red, green, blue)); // white
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
     // Draw filled circle as ellipse
     Ellipse(hdc, cx - radius, cy - radius, cx + radius, cy + radius);
     SelectObject(hdc, oldBrush);
     DeleteObject(brush);
 }
+
+//static void DrawPlanet(HWND hwnd, Coordinate centre, const RECT& rect) {
+//
+//}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -70,7 +78,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         HBRUSH bg = CreateSolidBrush(RGB(0, 0, 0));
         FillRect(hdc, &rc, bg);
         DeleteObject(bg);
-        DrawCircleInClient(hdc, rc);
+        int cx = (rc.right + rc.left) / 2;
+        int cy = (rc.bottom + rc.top) / 2;
+        int radius = 50;
+        DrawCircleInClient(hdc, cx, cy, radius, 120, 120, 200);
+        DrawPixelInClient(hwnd, Coordinate(100, 100));
         EndPaint(hwnd, &ps);
         return 0;
     }
