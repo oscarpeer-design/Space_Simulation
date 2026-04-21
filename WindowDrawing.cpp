@@ -69,10 +69,10 @@ static void DrawCircleInClient(HDC hdc, Coordinate centre, int radius, RGBBuffer
 }
 
 // Draw an orbital body on the screen
-static void DrawPlanet(HDC hdc, const OrbitalBodyRepresentation& planet) {
-    RGBBuffer colourBuffer = planet.colourBuffer;
-    Coordinate centre = planet.coordOnScreen;
-    int radius = planet.radius;
+static void DrawPlanet(HDC hdc, const PlanetRepresentation& planet) {
+    RGBBuffer colourBuffer = planet.planetaryBody.colourBuffer;
+    Coordinate centre = planet.planetaryBody.coordOnScreen;
+    int radius = planet.planetaryBody.radius;
     DrawCircleInClient(hdc, centre, radius, colourBuffer);
     if (planet.hasRings) {
         Coordinate start(centre.x - radius, centre.y);
@@ -102,7 +102,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         int cy = (rc.bottom + rc.top) / 2;
         int radius = 50;
 
-        OrbitalBodyRepresentation planet(Coordinate(cx, cy), 1, radius, RGBBuffer(120, 120, 200), RGBBuffer(200, 150, 150), 5);
+        PlanetRepresentation planet( OrbitalBodyRepresentation(Coordinate(cx, cy), 1, radius, RGBBuffer(120, 120, 200)), 5, RGBBuffer(200, 150, 150));
         DrawPlanet(hdc, planet);
         DrawPixelInClient(hdc, Coordinate(100, 100), RGBBuffer(255, 0,0));
         

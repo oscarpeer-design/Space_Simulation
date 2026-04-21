@@ -5,6 +5,7 @@
 #include <windows.h>
 #endif
 
+#include <vector>
 #include <unordered_map>
 
 // Simple 2D coordinate for projected points
@@ -44,11 +45,7 @@ struct OrbitalBodyRepresentation {
 	Coordinate coordOnScreen;
 	int index = 1;
 	int radius = 1;
-	bool hasRings = false;
-	UINT8 ringThickness = 0;
-
 	RGBBuffer colourBuffer;
-	RGBBuffer ringColourBuffer;
 	
 	OrbitalBodyRepresentation() = default;
 
@@ -57,20 +54,53 @@ struct OrbitalBodyRepresentation {
 		index = pIndex;
 		radius = pRadius;
 		colourBuffer = buffer;
-		hasRings = false;
-	}
-
-	OrbitalBodyRepresentation(Coordinate coord, int pIndex, int pRadius, RGBBuffer buffer, RGBBuffer ringColour, UINT8 thickness) {
-		coordOnScreen = coord;
-		index = pIndex;
-		radius = pRadius;
-		colourBuffer = buffer;
-		hasRings = true;
-		ringColourBuffer = ringColour;
-		ringThickness = thickness;
 	}
 
 	~OrbitalBodyRepresentation() {}
+};
+
+// Representation of planet
+struct PlanetRepresentation {
+	OrbitalBodyRepresentation planetaryBody;
+	std::vector<OrbitalBodyRepresentation> moons;
+
+	bool hasRings = false;
+	UINT8 ringThickness = 0;
+	RGBBuffer ringColourBuffer;
+	// default constructor
+	PlanetRepresentation() = default;
+
+	// planet with no moons or rings
+	PlanetRepresentation(OrbitalBodyRepresentation body) {
+		planetaryBody = body;
+		hasRings = false;
+	}
+
+	// planet with only moons
+	PlanetRepresentation(OrbitalBodyRepresentation body, std::vector<OrbitalBodyRepresentation> moonList) {
+		planetaryBody = body;
+		moons = moonList;
+		hasRings = false;
+	}
+
+	// planet with only rings
+	PlanetRepresentation(OrbitalBodyRepresentation body, UINT8 thickness, RGBBuffer ringBuffer) {
+		planetaryBody = body;
+		ringThickness = thickness;
+		ringColourBuffer = ringBuffer;
+		hasRings = true;
+	}
+
+	// planet with moons and rings
+	PlanetRepresentation(OrbitalBodyRepresentation body, std::vector<OrbitalBodyRepresentation> moonList, UINT8 thickness, RGBBuffer ringBuffer) {
+		planetaryBody = body;
+		moons = moonList;
+		ringThickness = thickness;
+		ringColourBuffer = ringBuffer;
+		hasRings = true;
+	}
+
+	~PlanetRepresentation() {}
 };
 
 // Forward declaration to avoid including Physics.h in this header and creating include cycles.
