@@ -164,7 +164,7 @@ int DrawWindow(int width, int height) {
     UpdateWindow(hwnd);
 
     // Start a timer to periodically invalidate the window (example: ~60Hz => 16ms)
-    //SetTimer(hwnd, 1, 16, NULL);
+    //SetTimer(hwnd, 1, 64, NULL);
 
     // Message loop
     MSG msg;

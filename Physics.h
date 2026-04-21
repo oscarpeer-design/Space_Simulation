@@ -87,6 +87,17 @@ static double ScalarGravitationalAroundBody(double bodyMass, double radius) {
 	return acceleration;
 }
 
+static double ScalarOrbitalRadius(double orbitalVelocity, double gravitationalAcceleration) {
+	//gravitationalAcceleration applies around the orbit of a planet from a star.
+	// r = v^2 / g
+	//It is important to note that as g changes (with distance), r varies, producing eliptical orbits
+	int iErr = 0;
+	if (iErr = validateDouble(gravitationalAcceleration))
+		return iErr;
+	double orbitalRadius = (orbitalVelocity * orbitalVelocity) / gravitationalAcceleration;
+	return orbitalRadius;
+}
+
 static double OrbitalPeriod(double starMass, double acceleration) {
 	//This calculates the time taken to complete one orbit in seconds
 	//T = 2pi * sqrt( (a ^ 3) / GM )
