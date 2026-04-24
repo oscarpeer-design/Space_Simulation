@@ -40,6 +40,33 @@ Coordinate Project3DTo2D(const Point &p, int fov, int screenWidth, int screenHei
 	return Coordinate{ static_cast<int>(std::round(px)), static_cast<int>(std::round(py)) };
 }
 
+// Convert radius from scientific notation to pixels
+static int RadiusInPixels(double radius, double conversionRatio, int screenWidth, int screenHeight) {
+    //each pixel on screen represents a converstion ratio. We choose 200km for most cases - the moon is approximately 1800 km
+    //TODO: consider non-scientific notation (km instead of metres)
+    double radiusConverted = radius / conversionRatio;
+    double screenRatio = static_cast<double>(screenWidth / screenHeight);
+    int radiusPixels = static_cast<int>(radiusConverted * screenRatio);
+    return radiusPixels;
+}
+
+//Convert orbital velocities to milliseconds
+static int OrbitalVelocityInMilliseconds(double velocity) {
+    //The Earth spins at 30km/s or 30,000 m/s
+    velocity = std::abs(velocity); //invalidate negative values
+    //convert velocity from m/s to km per second if greater than 1000
+    if (velocity > 1000)
+        velocity /= 1000;
+    //continue further reducing velocity until it is less than a specified number of times the refresh rate
+    int limit = maxRefreshRateFactor * refreshRate;
+    if (velocity >= limit) {
+        double factorToReduce = velocity / limit;
+        velocity /= factorToReduce;
+    }
+    int velocityInMilliseconds = static_cast<int>(velocity / refreshRate);
+    return velocityInMilliseconds;
+}
+
 // Draw a pixel into provided HDC (use HDC from BeginPaint during WM_PAINT)
 static void DrawPixelInClient(HDC hdc, Coordinate coord, RGBBuffer buffer) {
     SetPixel(hdc, coord.x, coord.y, RGB(buffer.red, buffer.green, buffer.blue));
@@ -100,7 +127,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 
         int cx = (rc.right + rc.left) / 2;
         int cy = (rc.bottom + rc.top) / 2;
-        int radius = 50;
+        int radius = 30;
 
         PlanetRepresentation planet( OrbitalBodyRepresentation(Coordinate(cx, cy), 1, radius, RGBBuffer(120, 120, 200)), 5, RGBBuffer(200, 150, 150));
         DrawPlanet(hdc, planet);
@@ -163,8 +190,7 @@ int DrawWindow(int width, int height) {
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);
 
-    // Start a timer to periodically invalidate the window (example: ~60Hz => 16ms)
-    //SetTimer(hwnd, 1, 64, NULL);
+    SetTimer(hwnd, 1, refreshRate, NULL);
 
     // Message loop
     MSG msg;

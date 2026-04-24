@@ -8,6 +8,9 @@
 #include <vector>
 #include <unordered_map>
 
+const int refreshRate = 16; // Start a timer to periodically invalidate the window (example: ~60Hz => 16ms)
+const int maxRefreshRateFactor = 10; //This is the maximum number of times a velocity can be higher than the refresh rate
+
 // Simple 2D coordinate for projected points
 struct Coordinate {
 	int x = 0;
