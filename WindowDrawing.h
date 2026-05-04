@@ -8,7 +8,7 @@
 #include <vector>
 #include <unordered_map>
 
-const int refreshRate = 16; // Start a timer to periodically invalidate the window (example: ~60Hz => 16ms)
+const int refreshRate = 16 * 100; // Start a timer to periodically invalidate the window (example: ~60Hz => 16ms)
 const int maxRefreshRateFactor = 10; //This is the maximum number of times a velocity can be higher than the refresh rate
 
 // Simple 2D coordinate for projected points
@@ -41,6 +41,19 @@ struct RGBBuffer {
 	}
 
 	~RGBBuffer() {}
+};
+
+// Lighting parameters used for per-pixel shading
+struct LightingBuffer {
+	double ambient = 0.15;          // ambient light factor
+	double diffuseStrength = 0.85;  // diffuse contribution scale
+	double lx = -0.4;               // light direction x
+	double ly = -0.3;               // light direction y
+	double lz = 0.9;                // light direction z
+
+	LightingBuffer() = default;
+	LightingBuffer(double a, double d, double _lx, double _ly, double _lz)
+		: ambient(a), diffuseStrength(d), lx(_lx), ly(_ly), lz(_lz) {}
 };
 
 // Representation of orbital body
