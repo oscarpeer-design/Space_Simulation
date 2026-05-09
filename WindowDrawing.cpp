@@ -43,22 +43,22 @@ Coordinate Project3DTo2D(const Point &p, int fov, int screenWidth, int screenHei
 
 // Convert radius from scientific notation to pixels
 static int RadiusInPixels(double radius, double conversionRatio, int screenWidth, int screenHeight) {
-    //each pixel on screen represents a converstion ratio. We choose 200km for most cases - the moon is approximately 1800 km
-    //TODO: consider non-scientific notation (km instead of metres)
+    // each pixel on screen represents a converstion ratio. We choose 200km for most cases - the moon is approximately 1800 km
+    // TODO: consider non-scientific notation (km instead of metres)
     double radiusConverted = radius / conversionRatio;
     double screenRatio = static_cast<double>(screenWidth / screenHeight);
     int radiusPixels = static_cast<int>(radiusConverted * screenRatio);
     return radiusPixels;
 }
 
-//Convert orbital velocities to milliseconds
+// Convert orbital velocities to milliseconds
 static int OrbitalVelocityInMilliseconds(double velocity) {
-    //The Earth spins at 30km/s or 30,000 m/s
-    velocity = std::abs(velocity); //invalidate negative values
-    //convert velocity from m/s to km per second if greater than 1000
+    // The Earth spins at 30km/s or 30,000 m/s
+    velocity = std::abs(velocity); // invalidate negative values
+    // convert velocity from m/s to km per second if greater than 1000
     if (velocity > 1000)
         velocity /= 1000;
-    //continue further reducing velocity until it is less than a specified number of times the refresh rate
+    // continue further reducing velocity until it is less than a specified number of times the refresh rate
     int limit = maxRefreshRateFactor * refreshRate;
     if (velocity >= limit) {
         double factorToReduce = velocity / limit;
@@ -66,6 +66,30 @@ static int OrbitalVelocityInMilliseconds(double velocity) {
     }
     int velocityInMilliseconds = static_cast<int>(velocity / refreshRate);
     return velocityInMilliseconds;
+}
+
+// moves a body on screen in an eliptical or circular motion around a central point
+static Coordinate moveOrbitalBody(Coordinate current, const Coordinate centrePoint, const int velocityInMilliseconds, const int elipticalFactor) {
+    // check there is no motion
+    if (!velocityInMilliseconds)
+        return current;
+    // get offset from centre
+    int deltaX = current.x - centrePoint.x;
+    int deltaY = current.y - centrePoint.y;
+    // calculate radius in the X andY direction
+    int radiusX = static_cast<int>(std::sqrt((deltaX * deltaX) + (deltaY * deltaY)));
+    int radiusY = radiusX;
+    // if there is an elipse, we squash the Y radius, and if not, we let it be the same as the X radius
+    if (elipticalFactor > 0)
+        radiusY /= elipticalFactor;
+    // get current and advance angles
+    double angle = std::atan2(deltaY, deltaX);
+    angle += velocityInMilliseconds * 0.001;
+    // advance x and y coordinates
+    int newX = centrePoint.x + static_cast<int>(radiusX * std::cos(angle));
+    int newY = centrePoint.y + static_cast<int>(radiusY * std::sin(angle));
+    // return the new point
+    return Coordinate(newX, newY);
 }
 
 // Draw a pixel into provided HDC (use HDC from BeginPaint during WM_PAINT)
@@ -144,7 +168,7 @@ static void DrawCircleInClient(HDC hdc, Coordinate centre, int radius, RGBBuffer
     }
 }
 
-// --- NEW helper: draw a shaded filled semicircle oriented by (dirx,diry).
+// Draw a shaded filled semicircle oriented by (dirx,diry).
 static void DrawSemiCircleInClient(HDC hdc, Coordinate centre, int radius, RGBBuffer buffer, const LightingBuffer& light, double dirx, double diry, bool frontHalf)
 {
 	if (radius <= 0) return;

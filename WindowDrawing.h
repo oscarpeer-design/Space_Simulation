@@ -63,8 +63,10 @@ struct OrbitalBodyRepresentation {
 	int radius = 1;
 	RGBBuffer colourBuffer;
 	
+	// default constructor
 	OrbitalBodyRepresentation() = default;
 
+	// main constructor
 	OrbitalBodyRepresentation(Coordinate coord, int pIndex, int pRadius, RGBBuffer buffer) {
 		coordOnScreen = coord;
 		index = pIndex;
@@ -117,6 +119,52 @@ struct PlanetRepresentation {
 	}
 
 	~PlanetRepresentation() {}
+};
+
+// Representation of a sun; a central star around which bodies revolve
+struct SunRepresentation {
+	OrbitalBodyRepresentation sunBody;
+	UINT8 thickness = 1;
+
+	// default constructor
+	SunRepresentation() = default;
+
+	// constructor with default orbital body, and a thickness level which represents a ring of light
+	SunRepresentation(OrbitalBodyRepresentation body, UINT8 ambientThickness) {
+		sunBody = body;
+		thickness = ambientThickness;
+	}
+
+	// constructor with no orbital body
+	SunRepresentation(Coordinate coordOnScreen, int index, int radius, RGBBuffer colourBuffer, UINT8 ambientThickness)
+	{
+		sunBody = OrbitalBodyRepresentation(coordOnScreen, index, radius, colourBuffer);
+		thickness = ambientThickness;
+	}
+
+	~SunRepresentation() {}
+};
+
+// Representation of a background star in a fixed position
+struct StarRepresentation {
+	Coordinate coordOnScreen;
+	RGBBuffer colourBuffer;
+
+	// default constructor
+	StarRepresentation() = default;
+
+	// constructor for default (white) star
+	StarRepresentation(Coordinate coord) {
+		coordOnScreen = coord;
+	}
+
+	// constructor for colour star
+	StarRepresentation(Coordinate coord, RGBBuffer buffer) {
+		coordOnScreen = coord;
+		colourBuffer = buffer;
+	}
+
+	~StarRepresentation() {}
 };
 
 // Forward declaration to avoid including Physics.h in this header and creating include cycles.

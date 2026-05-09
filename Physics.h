@@ -2,7 +2,7 @@
 #include <cmath>
 
 constexpr double UniversalGravitationalConstant = 6.674e-11; // 6.674 * 10^-11 N·m^2/kg^2
-constexpr double Pi = 3.14159265358979323846; //value for Pi for compilers that aren't C++ 20
+constexpr double Pi = 3.14159265358979323846; // value for Pi for compilers that aren't C++ 20
 // Seconds per day and per Julian year (365.25 days)
 constexpr double SecondsPerDay = 86400;
 constexpr double DaysPerYear = 365.25;
@@ -12,7 +12,7 @@ const int errDivisionZero = -1;
 const int errRootNegativeNumber = -2;
 const int errNumTooLarge = -3;
 
-//Represents position of 3D coordinates
+// Represents position of 3D coordinates
 struct Point { 
 	double x = 0;
 	double y = 0;
@@ -67,8 +67,8 @@ Note that:
 */
 
 static double ScalarOrbitalVelocity(double bodyMass, double radius) {
-	//This calculates the circular orbital velocity of an object around a planet or star
-	//v = sqrt( (G *M) / r)
+	// This calculates the circular orbital velocity of an object around a planet or star
+	// v = sqrt( (G *M) / r)
 	int iErr = 0;
 	if (iErr = validateDouble(radius))
 		return iErr;
@@ -78,8 +78,8 @@ static double ScalarOrbitalVelocity(double bodyMass, double radius) {
 }
 
 static double ScalarGravitationalAroundBody(double bodyMass, double radius) {
-	//This calculates the acceleration of an object around a planet or star
-	//a = GM / (r^2)
+	// This calculates the acceleration of an object around a planet or star
+	// a = GM / (r^2)
 	int iErr = 0;
 	if (iErr = validateDouble(radius))
 		return iErr;
@@ -88,9 +88,9 @@ static double ScalarGravitationalAroundBody(double bodyMass, double radius) {
 }
 
 static double ScalarOrbitalRadius(double orbitalVelocity, double gravitationalAcceleration) {
-	//gravitationalAcceleration applies around the orbit of a planet from a star.
+	// gravitationalAcceleration applies around the orbit of a planet from a star.
 	// r = v^2 / g
-	//It is important to note that as g changes (with distance), r varies, producing eliptical orbits
+	// It is important to note that as g changes (with distance), r varies, producing eliptical orbits
 	int iErr = 0;
 	if (iErr = validateDouble(gravitationalAcceleration))
 		return iErr;
